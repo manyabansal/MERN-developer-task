@@ -1,0 +1,14 @@
+html, body {
+    width: 1920px;
+    height: 960px;
+    top: -213px;
+    left: 4077px;
+
+}
+
+body {
+    background-image: url('./images/sign-up.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}

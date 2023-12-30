@@ -1,0 +1,12 @@
+.nav {
+    height: 88px;
+    backdrop-filter: blur(4px);
+}
+
+.navLogo {
+    position: relative;
+    width: 256px;
+    height: 56.24px;
+    top: 15.88px;
+    left: 92px;
+}

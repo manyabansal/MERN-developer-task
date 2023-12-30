@@ -1,5 +1,5 @@
 .body {
-    background-image: url("../images/sign-up.png");
+
     width: 1920px;
     height: 960px;
     top: -213px;
@@ -129,24 +129,25 @@ label {
     border: 1px;
 }
 
-.submit-btn{
-    position: relative;;
+.submit-btn {
+    position: relative;
+    ;
     width: 513px;
-height: 48px;
-top: 250px;
-left: 91px;
-border-radius: 5px;
-box-shadow: none;
-background-color: #297BCA;
-border-color: #297BCA;
+    height: 48px;
+    top: 250px;
+    left: 91px;
+    border-radius: 5px;
+    box-shadow: none;
+    background-color: #297BCA;
+    border-color: #297BCA;
 }
 
-.btn-text{
+.btn-text {
     font-family: Poppins;
-font-size: 20px;
-font-weight: 800;
-line-height: 35px;
-letter-spacing: 0.08em;
-text-align: center;
-color: white;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 35px;
+    letter-spacing: 0.08em;
+    text-align: center;
+    color: white;
 }

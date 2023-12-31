@@ -1,7 +1,7 @@
 // import { promises, readFileSync, createReadStream } from "fs";
 // import { resolve } from "path";
 // import OpenAI from "openai";
-// const openai = new OpenAI({ apiKey: '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' });
+// const openai = new OpenAI({ apiKey: 'process.env.OPENAI_API_KEY' });
 
 // const speechFile = resolve("./speech.mp3");
 
@@ -16,13 +16,12 @@
 //   await promises.writeFile(speechFile, buffer);
 // }
 // main();
-
+require("dotenv").config();
 import express, { json } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import User from "./models/User.js";
-import bcrypt from "bcryptjs"; // Modify this line
-import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs"; 
 import mongoose from "mongoose";
 
 const app = express();
@@ -36,15 +35,14 @@ const salt = bcrypt.genSaltSync(10);
 app.use(bodyParser.urlencoded({ extended: true }));
 const corsOptions = {
   credentials: true,
-  origin: HOST, // Replace with the actual origin of your React app
+  origin: HOST, 
 };
 
-// Use CORS middleware with the specified options
 app.options("/login", cors(corsOptions));
 app.use(json());
 mongoose
   .connect(
-    "mongodb+srv://maanyab007:Ashok1612%40@cluster0.dkwh4lo.mongodb.net/goodspaceDB?retryWrites=true&w=majority",
+    MONGODB_URI,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => {
@@ -73,11 +71,7 @@ mongoose
         const userInfo = user;
         const passOk = bcrypt.compareSync(password, userInfo.password);
         if (passOk) {
-          const token = jwt.sign(
-            { email, id: userInfo._id },
-            "Thisismysupersupersupersecretkeydonotdarehackit."
-          );
-          res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+          res.header("Access-Control-Allow-Origin", HOST);
           return res
             .json({
               id: userInfo._id,
@@ -93,7 +87,7 @@ mongoose
         });
 
         userInfo.save();
-        res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+        res.header("Access-Control-Allow-Origin", HOST);
         return res.json(userInfo);
       }
     })

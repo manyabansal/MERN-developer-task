@@ -16,84 +16,70 @@
 //   await promises.writeFile(speechFile, buffer);
 // }
 // main();
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config({ path: "./.env" });
+
 import express, { json } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import User from "./models/User.js";
-import bcrypt from "bcryptjs"; 
 import mongoose from "mongoose";
+import userRoute from "./routes/users.js";
+import { Server } from "socket.io";
+import { createServer } from "node:http";
 
 const app = express();
+const HOST ="http://localhost:3000";
+const server = createServer(app);
+const io = new Server(server, {
+  cors:{
+    origin: HOST,
+    methods: ["GET", "POST"],
+  }
+});
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
 
-const HOST = "http://localhost:3000";
-const salt = bcrypt.genSaltSync(10);
 app.use(bodyParser.urlencoded({ extended: true }));
 const corsOptions = {
   credentials: true,
-  origin: HOST, 
+  origin: HOST,
 };
+app.options("/users/login", cors(corsOptions));
+app.options("/socket.io", cors(corsOptions))
+app.use(express.json());
 
-app.options("/login", cors(corsOptions));
-app.use(json());
 mongoose
-  .connect(
-    MONGODB_URI,
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(process.env.MONGODB_URI, {
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("Connected to Database");
   })
   .catch((err) => {
     console.log(err);
   });
-  
-  app.get('/', (req,res)=>{
-    res.send('ok');
-  })
-  app.post("/login", (req, res) => {
-    const email = req.body.email
-    const password = req.body.password;
 
-    if(!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)){
-      res.json({
-        status: "FAILED",
-        message: "Invalid email entered"
-      })
-    }
-    User.findOne({ email })
-    .then((user) => {
-      if (user) {
-        const userInfo = user;
-        const passOk = bcrypt.compareSync(password, userInfo.password);
-        if (passOk) {
-          res.header("Access-Control-Allow-Origin", HOST);
-          return res
-            .json({
-              id: userInfo._id,
-              email,
-            });
-        } else {
-          return res.status(401).json({ message: "Wrong password" });
-        }
-      } else {
-        const userInfo = new User({
-          email: email,
-          password: bcrypt.hashSync(password, salt),
-        });
+app.get("/", (req, res) => {
+  res.send("ok");
+});
 
-        userInfo.save();
-        res.header("Access-Control-Allow-Origin", HOST);
-        return res.json(userInfo);
-      }
-    })
-    .catch((err) => console.log(err));
+app.use("/users", userRoute);
+
+io.on("connection", (socket) => {
+  console.log(" user connected");
+
+  socket.on('chat message', (msg)=>{
+    console.log(msg);
   });
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+  
+});
 
-  app.listen(8000, (req,res)=>{
-    console.log("Server is listening");
-  })
+server.listen(8000, (req, res) => {
+  console.log("Server is listening");
+});

@@ -4,12 +4,14 @@ import PageRenderer from "./page-renderer";
 import SignUp from "./pages/sign-up";
 import Navbar from "./components/navbar";
 import { UserContextProvider } from "./user-context";
+import Chat from "./pages/chat";
 function App() {
   return (
     <UserContextProvider>
     <Router>
     <div className="App">
       <Navbar/>
+      <Chat />
       <Routes>
       <Route path="/:page" element={<PageRenderer />} />
         <Route path="/" element={<SignUp />} />

@@ -7,7 +7,7 @@ function SignUp() {
    const [password, setPassword]= useState("");
    async function login(ev){
     ev.preventDefault();
-    const response= await fetch("http://127.0.0.1:8000/login",{
+    const response= await fetch("http://localhost:8000/users/login",{
      method: 'POST',
      body: JSON.stringify({email, password}),
      headers:{

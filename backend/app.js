@@ -1,21 +1,3 @@
-// import { promises, readFileSync, createReadStream } from "fs";
-// import { resolve } from "path";
-// import OpenAI from "openai";
-// const openai = new OpenAI({ apiKey: 'process.env.OPENAI_API_KEY' });
-
-// const speechFile = resolve("./speech.mp3");
-
-// async function main() {
-//   const mp3 = await openai.audio.speech.create({
-//     model: "tts-1",
-//     voice: "alloy",
-//     input: "Today is a wonderful day to build something people love!",
-//   });
-//   console.log(speechFile);
-//   const buffer = Buffer.from(await mp3.arrayBuffer());
-//   await promises.writeFile(speechFile, buffer);
-// }
-// main();
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 
@@ -26,16 +8,17 @@ import mongoose from "mongoose";
 import userRoute from "./routes/users.js";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
-import cookieParser from "cookie-parser";
 
+import cookieParser from "cookie-parser";
+import chatRoute from "./routes/chats.js";
 const app = express();
-const HOST ="http://localhost:3000";
+const HOST = "http://localhost:3000";
 const server = createServer(app);
 const io = new Server(server, {
-  cors:{
+  cors: {
     origin: HOST,
     methods: ["GET", "POST"],
-  }
+  },
 });
 
 app.use((req, res, next) => {
@@ -50,7 +33,9 @@ const corsOptions = {
 };
 app.options("/users/login", cors(corsOptions));
 app.options("/users/profile", cors(corsOptions));
-app.options("/socket.io", cors(corsOptions))
+app.options("/chats/send", cors(corsOptions));
+app.options("/chats/receive", cors(corsOptions));
+app.options("/socket.io", cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -70,17 +55,16 @@ app.get("/", (req, res) => {
 });
 
 app.use("/users", userRoute);
-
+app.use("/chats", chatRoute);
 io.on("connection", (socket) => {
   console.log(" user connected");
 
-  socket.on('chat message', (msg)=>{
+  socket.on("chat message", (msg) => {
     console.log(msg);
   });
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
   });
-  
 });
 
 server.listen(8000, (req, res) => {

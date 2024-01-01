@@ -1,23 +1,23 @@
 import { Router } from "express";
 import User from "../models/User.js";
-import bcrypt from "bcryptjs"; 
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const salt = bcrypt.genSaltSync(10);
-const userRoute= Router();
+const userRoute = Router();
 const HOST = "http://localhost:3000";
 
 userRoute.post("/login", (req, res) => {
-    const email = req.body.email
-    const password = req.body.password;
+  const email = req.body.email;
+  const password = req.body.password;
 
-    if(!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)){
-      res.json({
-        status: "FAILED",
-        message: "Invalid email entered"
-      })
-    }
-    User.findOne({ email })
+  if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+    res.json({
+      status: "FAILED",
+      message: "Invalid email entered",
+    });
+  }
+  User.findOne({ email })
     .then((user) => {
       if (user) {
         const userInfo = user;
@@ -29,12 +29,12 @@ userRoute.post("/login", (req, res) => {
           );
           res.header("Access-Control-Allow-Origin", HOST);
           return res
-          .cookie(`token`, token, {
-            path: "/",
-            secure: true,
-            httpOnly: true,
-            sameSite: "none",
-          })
+            .cookie(`token`, token, {
+              path: "/",
+              secure: true,
+              httpOnly: true,
+              sameSite: "none",
+            })
             .json({
               id: userInfo._id,
               email,
@@ -51,12 +51,12 @@ userRoute.post("/login", (req, res) => {
         userInfo.save();
         res.header("Access-Control-Allow-Origin", HOST);
         return res
-        .cookie(`token`, token, {
-          path: "/",
-          secure: true,
-          httpOnly: true,
-          sameSite: "none",
-        })
+          .cookie(`token`, token, {
+            path: "/",
+            secure: true,
+            httpOnly: true,
+            sameSite: "none",
+          })
           .json({
             id: userInfo._id,
             email,
@@ -64,16 +64,16 @@ userRoute.post("/login", (req, res) => {
       }
     })
     .catch((err) => console.log(err));
-  });
-  
-  userRoute.get("/profile", async (req, res) => {
-    const token = req.cookies.token;
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    res.header("Access-Control-Allow-Origin", HOST);
-    const info = jwt.verify(token, process.env.SECRET);
-    res.json(info);
-  });
+});
 
-  export default userRoute;
+userRoute.get("/profile", async (req, res) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  res.header("Access-Control-Allow-Origin", HOST);
+  const info = jwt.verify(token, process.env.SECRET);
+  res.json(info);
+});
+
+export default userRoute;

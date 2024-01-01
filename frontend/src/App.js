@@ -11,7 +11,6 @@ function App() {
     <Router>
     <div className="App">
       <Navbar/>
-      <Chat />
       <Routes>
       <Route path="/:page" element={<PageRenderer />} />
         <Route path="/" element={<SignUp />} />

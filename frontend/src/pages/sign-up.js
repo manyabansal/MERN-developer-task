@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Navigate } from "react-router-dom";
 import "./css/sign-up.css";
 import gImg from "./images/g.png";
 function SignUp() {
    const [email, setEmail]= useState("");
    const [password, setPassword]= useState("");
+
    async function login(ev){
     ev.preventDefault();
     const response= await fetch("http://localhost:8000/users/login",{
@@ -18,6 +18,7 @@ function SignUp() {
     });
     if(response.ok){
        window.location.reload();
+       window.location.href="/chat";
     }
     else {
         console.error("Failed to fetch:", response.statusText);

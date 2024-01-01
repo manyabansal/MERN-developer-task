@@ -26,6 +26,7 @@ import mongoose from "mongoose";
 import userRoute from "./routes/users.js";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const HOST ="http://localhost:3000";
@@ -48,8 +49,10 @@ const corsOptions = {
   origin: HOST,
 };
 app.options("/users/login", cors(corsOptions));
+app.options("/users/profile", cors(corsOptions));
 app.options("/socket.io", cors(corsOptions))
 app.use(express.json());
+app.use(cookieParser());
 
 mongoose
   .connect(process.env.MONGODB_URI, {

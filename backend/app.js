@@ -35,6 +35,7 @@ app.options("/users/login", cors(corsOptions));
 app.options("/users/profile", cors(corsOptions));
 app.options("/chats/send", cors(corsOptions));
 app.options("/chats/receive", cors(corsOptions));
+app.options("/chats/:userId", cors(corsOptions));
 app.options("/socket.io", cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());

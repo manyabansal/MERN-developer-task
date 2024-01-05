@@ -25,6 +25,21 @@ async function botResponse(content) {
   return response.choices[0].message.content;
 }
 
+chatRoute.get("/:userId", async(req,res)=>{
+   const {userId}= req.params;
+   try{
+    Message.find({"user":userId})
+    .then((msgs)=>{
+      res.header("Access-Control-Allow-Origin", HOST);
+      res.json(msgs);
+    }).catch((err)=>{
+      throw err;
+    });
+
+   } catch(err){
+      console.error(err);
+   }
+});
 chatRoute.post("/send", async (req, res) => {
   const content = req.body.content;
   const token = req.cookies.token;

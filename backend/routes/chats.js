@@ -58,7 +58,7 @@ chatRoute.post("/send", async (req, res) => {
 });
 
 chatRoute.post("/receive", async (req, res) => {
-  const content = req.body.content;
+  const content = req.body.cont;
   const token = req.cookies.token;
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });

@@ -5,6 +5,7 @@ import express, { json } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
+import Message from "./models/Message.js";
 import userRoute from "./routes/users.js";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
@@ -15,6 +16,7 @@ const app = express();
 const HOST = "http://localhost:3000";
 const server = createServer(app);
 const io = new Server(server, {
+  pingTimeout:60000,
   cors: {
     origin: HOST,
     methods: ["GET", "POST"],
@@ -57,12 +59,24 @@ app.get("/", (req, res) => {
 
 app.use("/users", userRoute);
 app.use("/chats", chatRoute);
-io.on("connection", (socket) => {
-  console.log(" user connected");
 
-  socket.on("chat message", (msg) => {
-    console.log(msg);
+io.on("connection", (socket) => {
+  
+  socket.on("setup", (userData)=>{
+    socket.join(userData?.id);
+    console.log(userData.id);
+    socket.emit("connection");
   });
+  
+  socket.on("new message", (msg,user) => {
+    console.log("1.new message");
+    io.in(user.id).emit("receive from bot", msg);
+    
+  });
+  socket.on("received", (msg,user)=>{
+    console.log("3.")
+    io.in(user.id).emit("bot reply", msg);
+  })
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });

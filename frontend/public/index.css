@@ -7,8 +7,18 @@ html, body {
 }
 
 body {
-    background-image: url('./images/sign-up.png');
+    max-width: 100%;
+    max-height: 100%;
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+}
+
+.signup-page{
+    background-image: url('./images/sign-up.png');
+}
+
+.chat-page{
+    background-image: url('./images/chat.png');
+    
 }

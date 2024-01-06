@@ -26,7 +26,7 @@ function SignUp() {
  }
 
   return (
-    <div>
+    <div className="signup-page">
       <div className="left-part">
         <img src={gImg} />
         <p>

@@ -94,7 +94,7 @@ function ChatContainer({
       socket.off("receive from bot");
       socket.off("bot reply");
     };
-  }, [socket]);
+  }, []);
 
   return (
     <div className="chat-container">
